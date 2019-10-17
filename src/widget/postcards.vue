@@ -12,15 +12,22 @@
  -->
 
 <template>
-  <div class="postcards" :style="'width:' + curWindowH + 'px;'">
+  <div class="postcards" :style="
+  'width:' + postSizeW + 'px;' + 
+  'height:' + postSizeH + 'px;' +
+  'color:' + postTextColor +';' +
+  'font-size:' + postTextSize +'px;'">
 	  <img :src="stampURL" >
-      测试大小
+      {{postContent}}
   </div>
 </template>
 
 <style scoped>
 .postcards{
+  position: absolute;
+
   background-color: #fff ;
+  border-radius: 5px;
 }
 </style>
 
@@ -29,47 +36,54 @@
     name:"postcards",
 		data () {
 			return {
-				//源码明信片默认大小
+				//浏览器窗口大小
 				curWindowH: document.documentElement.clientHeight,
 				curWindowW: document.documentElement.clientWidth,
+				//明信片默认大小
+				postSizeH: 560,
+				postSizeW: 1220,
 				//明信片内容样式
-				postContent: "测试",
+				postContent: "编程猫的邮箱",
 				postTextSize: 20,
-				postTextColor: "#000",
+				postTextColor: "#5E150C",
 				postBold: false,
 				//明信片默认邮票
 				stampURL: "https://static.codemao.cn/whale/Skcuc_dQ4?imageMogr2/thumbnail/!200x200r/blur/1x0/quality/100|imageslim"
 			}
 		},
-		watch: {
-			curWindowH (v) {
-				//监控浏览器高度变化
-				if(!this.timer) {
-					this.curWindowH = v
-					this.timer = true
-					let that = this
-					setTimeout(function (){
-						that.timer = false
-					},400)
-				}
-			},
-			curWindowW (v) {
-				//同样的，高度变化
-				if(!this.timer) {
-					this.curWindowW = v
-					this.timer = true
-					let that = this
-					setTimeout(function (){
-						that.timer = false
-					},400)
+		computed: {
+			curWindowSize() {
+				const {
+					curWindowH,
+					curWindowW
+				} = this
+				return {
+					curWindowH,
+					curWindowW
 				}
 			}
 		},
+		watch: {			
+			curWindowSize: {
+				handler: function(v) {
+					if(!this.timer) {
+						this.curWindowH = v
+						this.curWindowW = v
+						this.timer = this
+						let that = this
+						setTimeout(function (){
+							that.timer = false
+						},1000) //设置延时以防被隔壁宿舍骂死慢！！！
+					}
+				}
+			}
+			
+		},
 		mounted () {
-			this.getWindowSiz()
+			this.getSizeReturn ()
 		},
 		methods :{
-			getWindowSize () {
+			getSizeReturn () {
 				//取浏览器窗口大小
 				const that = this
 				window.onresize = () => {
@@ -79,6 +93,15 @@
 						window.curWindowW = document.documentElement.clientWidth
 						that.curWindowW = window.curWindowW
 					})()
+					/*
+					if (curWindowW <= 1810 || curWindowH <= 745) {
+						return (() => {
+							postSizeH = curWindowW - 100
+							postSizeW = curWindowW -200
+						})()
+						
+					}
+					*/
 				}
 			}
 		}

@@ -34,10 +34,10 @@ export default {
 <style>
 body{
   background-color:#4b9874 ;
+  text-align: center;
 }
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
 }
 </style>
